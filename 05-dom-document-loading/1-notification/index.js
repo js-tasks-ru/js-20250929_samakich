@@ -1,5 +1,5 @@
 export default class NotificationMessage {
-  static lastElement = null;
+  static lastElement;
 
   element;
   text;
@@ -19,7 +19,8 @@ export default class NotificationMessage {
 
   show(div) {
     if (NotificationMessage.lastElement) {
-      NotificationMessage.lastElement.hide();
+      NotificationMessage.lastElement.remove();
+      clearTimeout(NotificationMessage.lastElement.timer);
     }
 
     if (div) {
@@ -29,7 +30,7 @@ export default class NotificationMessage {
     }
 
     this.timer = setTimeout(() => {
-      this.hide();
+      this.remove();
     }, this.duration);
   }
 
@@ -41,8 +42,6 @@ export default class NotificationMessage {
     const firstElementChild = element.firstElementChild;
 
     NotificationMessage.lastElement = this;
-
-    document.body.append(element);
 
     return firstElementChild;
   }
@@ -61,11 +60,8 @@ export default class NotificationMessage {
     `;
   }
 
-  hide() {
-    clearTimeout(this.timer);
-    const divDelete = document.querySelector('.notification');
-    divDelete.remove();
-    //NotificationMessage.lastElement.hidden = true;
+  remove() {
+    this.destroy();
   }
 
   destroy() {

@@ -17,17 +17,15 @@ export default class NotificationMessage {
     this.element = this.createElement();
   }
 
-  show(div) {
+  show(container = document.body) {
     if (NotificationMessage.lastElement) {
       NotificationMessage.lastElement.remove();
       clearTimeout(NotificationMessage.lastElement.timer);
     }
 
-    if (div) {
-      div.append(this.element);
-    } else {
-      document.body.append(this.element);
-    }
+    NotificationMessage.lastElement = this;
+
+    container.append(this.element);
 
     this.timer = setTimeout(() => {
       this.remove();
@@ -39,11 +37,7 @@ export default class NotificationMessage {
 
     element.innerHTML = this.createTemplate();
 
-    const firstElementChild = element.firstElementChild;
-
-    NotificationMessage.lastElement = this;
-
-    return firstElementChild;
+    return element.firstElementChild;
   }
 
   createTemplate() {

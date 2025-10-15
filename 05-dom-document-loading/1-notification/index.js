@@ -1,5 +1,5 @@
 export default class NotificationMessage {
-  static lastElement;
+  static lastShowComponent;
 
   element;
   text;
@@ -18,12 +18,12 @@ export default class NotificationMessage {
   }
 
   show(container = document.body) {
-    if (NotificationMessage.lastElement) {
-      NotificationMessage.lastElement.remove();
-      clearTimeout(NotificationMessage.lastElement.timer);
+    if (NotificationMessage.lastShowComponent) {
+      NotificationMessage.lastShowComponent.remove();
+      clearTimeout(NotificationMessage.lastShowComponent.timer);
     }
 
-    NotificationMessage.lastElement = this;
+    NotificationMessage.lastShowComponent = this;
 
     container.append(this.element);
 
@@ -55,10 +55,10 @@ export default class NotificationMessage {
   }
 
   remove() {
-    this.destroy();
+    this.element.remove();
   }
 
   destroy() {
-    this.element.remove();
+    this.remove();
   }
 }

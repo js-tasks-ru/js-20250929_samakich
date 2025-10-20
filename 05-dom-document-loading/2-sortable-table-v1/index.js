@@ -39,7 +39,7 @@ export default class SortableTable {
   createHeaderTemplate() {
     return this.headerConfig.map((headerConfig) => {
       return `
-        <div class="sortable-table__cell" data-id="${headerConfig.id}" data-sortable="${headerConfig.sortable}" ${this.orderValue === headerConfig.id ? 'data-order="' + this.orderType + '"' : ''}">
+        <div class="sortable-table__cell" data-id="${headerConfig.id}" data-sortable="${headerConfig.sortable}" ${this.orderValue === headerConfig.id ? 'data-order="' + this.orderType + '"' : ''}>
           <span>${headerConfig.title}</span>
         </div>
       `;

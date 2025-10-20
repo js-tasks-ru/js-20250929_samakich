@@ -12,12 +12,11 @@ export default class SortableTableV2 extends SortableTableV1 {
     super(headerConfig, data);
     this.sorted = sorted;
     this.isSortLocally = isSortLocally;
+    this.sort(sorted.id, sorted.order);
     this.createListeners();
     this.arrowElement = this.createArrowElement();
-    const defaultHeader = this.subElements.header.querySelector(`[data-id = "${this.sorted.id}"]`);
-    if (defaultHeader) {
-      this.setSort(defaultHeader, this.sorted.order);
-    }
+    const defaultHeader = this.subElements.header.querySelector(`[data-id = "${sorted.id}"]`);
+    this.setSort(defaultHeader, sorted.order);
   }
 
   setSort(defaultHeader, order) {
@@ -54,6 +53,7 @@ export default class SortableTableV2 extends SortableTableV1 {
 
   handleHeaderCellClick = (e) => {
     const cellElement = e.target.closest('.sortable-table__cell');
+    console.log(this.subElements);
 
     if (!cellElement) {
       return;
@@ -64,7 +64,7 @@ export default class SortableTableV2 extends SortableTableV1 {
     }
 
     const sortField = cellElement.dataset.id;
-    const sortOrder = cellElement.dataset.order === 'desc' ? 'asc' : 'desc';
+    const sortOrder = cellElement.dataset.order === 'asc' ? 'desc' : 'asc';
 
     this.setSort(cellElement, sortOrder);
     this.sort(sortField, sortOrder);

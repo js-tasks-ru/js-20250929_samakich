@@ -12,7 +12,7 @@ export default class SortableTableV2 extends SortableTableV1 {
     super(headerConfig, data);
     this.sorted = sorted;
     this.isSortLocally = isSortLocally;
-    this.sort(sorted.id, sorted.order);
+    //this.sort(sorted.id, sorted.order);
     this.createListeners();
     this.arrowElement = this.createArrowElement();
     const defaultHeader = this.subElements.header.querySelector(`[data-id = "${sorted.id}"]`);
@@ -53,7 +53,7 @@ export default class SortableTableV2 extends SortableTableV1 {
 
   handleHeaderCellClick = (e) => {
     const cellElement = e.target.closest('.sortable-table__cell');
-    console.log(this.subElements);
+    //console.log(this.subElements);
 
     if (!cellElement) {
       return;
@@ -64,18 +64,18 @@ export default class SortableTableV2 extends SortableTableV1 {
     }
 
     const sortField = cellElement.dataset.id;
-    const sortOrder = cellElement.dataset.order === 'asc' ? 'desc' : 'asc';
+    const sortOrder = cellElement.dataset.order === 'desc' ? 'asc' : 'desc';
 
     this.setSort(cellElement, sortOrder);
     this.sort(sortField, sortOrder);
   }
 
   createListeners() {
-    this.subElements.header.addEventListener('click', this.handleHeaderCellClick);
+    this.subElements.header.addEventListener('pointerdown', this.handleHeaderCellClick);
   }
 
   destroyListeners() {
-    this.subElements.header.removeEventListener('click', this.handleHeaderCellClick);
+    this.subElements.header.removeEventListener('pointerdown', this.handleHeaderCellClick);
   }
 
   destroy() {

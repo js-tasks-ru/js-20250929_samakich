@@ -1,12 +1,10 @@
 export default class SortableTable {
-  orderValue;
-  orderType;
-  subElements;
+
   constructor(headerConfig = [], data = []) {
     this.headerConfig = headerConfig;
     this.data = data;
     this.element = this.createElement();
-    this.createSubElements();
+    this.subElements = this.createSubElements();
   }
 
   createElement() {
@@ -41,20 +39,11 @@ export default class SortableTable {
   createHeaderTemplate() {
     return this.headerConfig.map((headerConfig) => {
       return `
-        <div class="sortable-table__cell" data-id="${headerConfig.title}" data-sortable="${headerConfig.sortable}" ${this.orderValue === headerConfig.id ? 'data-order="' + this.orderType + '"' : ''}">
+        <div class="sortable-table__cell" data-id="${headerConfig.id}" data-sortable="${headerConfig.sortable}" ${this.orderValue === headerConfig.id ? 'data-order="' + this.orderType + '"' : ''}">
           <span>${headerConfig.title}</span>
-          ${this.createHeaderArrow(headerConfig.id, headerConfig.sortable)}
         </div>
       `;
     }).join('');
-  }
-
-  createHeaderArrow(headerId, isSortable = false) {
-    return headerId === this.orderValue && isSortable
-      ? `<span data-element="arrow" class="sortable-table__sort-arrow">
-              <span class="sort-arrow"></span>
-        </span>`
-      : '';
   }
 
   createTableBodyCellTemplate(product, columnConfig) {
@@ -93,15 +82,20 @@ export default class SortableTable {
         ? direction * a[field].localeCompare(b[field], ["ru", "en"], {caseFirst: "upper"})
         : direction * (a[field] - b[field]);
     });
-    this.element.innerHTML = this.createTemplate();
 
-    this.createSubElements();
+    this.subElements.body.innerHTML = this.createBodyTemplate();
   }
 
   createSubElements() {
-    this.subElements = {
-      body: this.element.querySelector('[data-element="body"]')
-    };
+    const subElements = {};
+    const elements = this.element.querySelectorAll('[data-element]');
+
+    for (const element of elements) {
+      const name = element.dataset.element;
+      subElements[name] = element;
+    }
+
+    return subElements;
   }
 
   remove() {

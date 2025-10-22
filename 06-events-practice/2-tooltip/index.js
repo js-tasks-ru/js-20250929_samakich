@@ -28,22 +28,28 @@ class Tooltip {
   }
 
   onDocumentMouseOver = (e) => {
-    const text = e.target.dataset.tooltip;
+    if (e.target.dataset.tooltip) {
+      const text = e.target.dataset.tooltip;
 
-    if (text) {
-      this.render(text);
+      if (text) {
+        this.render(text);
+      }
     }
   }
 
   onDocumentMouseOut = (e) => {
-    this.remove();
+    if (e.target.dataset.tooltip) {
+      this.remove();
+    }
   }
 
   onDocumentMouseMove = (e) => {
-    this.element.style.color = '#EE82EE';
-    this.element.style.backgroundColor = '#B0E0E6';
-    this.element.style.left = `${e.clientX + 25}px`;
-    this.element.style.Right = `${e.clientY + 25}px`;
+    if (e.target.dataset.tooltip) {
+      this.element.style.color = '#EE82EE';
+      this.element.style.backgroundColor = '#B0E0E6';
+      this.element.style.left = `${e.clientX + 25}px`;
+      this.element.style.Right = `${e.clientY + 25}px`;
+    }
   }
 
   createListeners() {

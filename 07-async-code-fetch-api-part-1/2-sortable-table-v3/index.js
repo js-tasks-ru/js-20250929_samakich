@@ -4,10 +4,10 @@ import SortableTableV2 from '../../06-events-practice/1-sortable-table-v2/index.
 const BACKEND_URL = 'https://course-js.javascript.ru';
 
 export default class SortableTable extends SortableTableV2 {
-  start;
-  end;
-  size;
-  isLoadingData;
+  start = 0;
+  end = 30;
+  static size = 30;
+  isLoadingData = false;
   constructor(headersConfig, params = {}) {
     const {
       data = [],
@@ -16,22 +16,15 @@ export default class SortableTable extends SortableTableV2 {
         order: 'asc'
       },
       url = '',
-      isSortLocally = true
+      isSortLocally = false
     } = params;
 
 
-    super(headersConfig, {data, sorted, url, isSortLocally});
-
+    super(headersConfig, {data, sorted, url, isSortLocally: true});
     this.url = url;
     this.isSortLocally = isSortLocally;
 
-    this.start = 0;
-    this.end = 30;
-    this.size = 30;
-
-    this.isLoadingData = false;
-
-    this.render().then();
+    this.render();
   }
 
   getUrl() {
@@ -52,11 +45,15 @@ export default class SortableTable extends SortableTableV2 {
     this.sorted.id = id;
     this.sorted.order = order;
 
+    this.data = [];
+    this.start = 0;
+    this.end = 30;
+
     await this.render();
   }
 
   async render() {
-    if (this.isLoadingData) {
+    if (this.isLoadingData || !this.url) {
       return;
     }
 
@@ -64,51 +61,54 @@ export default class SortableTable extends SortableTableV2 {
     try {
 
       const url = this.getUrl();
-      const response = await fetch(url);
-      const data = await response.json();
+      const data = await fetchJson(url);
 
-      if (!data.length) {
+      this.isLoadingData = true;
+
+      /*if (!data.length) {
         this.isLoadingData = true;
         return;
-      }
+      }*/
       for (let item of data) {
         this.data.push(item);
       }
       this.subElements.body.innerHTML = this.createBodyTemplate();
 
     } catch (err) {
-      console.error(err);
+      console.log(err);
     } finally {
       this.subElements.loading.style.display = 'none';
       this.isLoadingData = false;
     }
   }
 
-  handleScroll = (e) => {
-    if (this.isLoadingData) {
-      return;
-    }
+  async handleScroll() {
+    if (!this.isLoadingData) {
+      const scrollPosition = window.scrollY + window.innerHeight; // Текущая позиция скролла + высота видимой области
+      const documentHeight = document.body.clientHeight - 50; // Полная высота документа
 
-    const scrollPosition = window.scrollY + window.innerHeight; // Текущая позиция скролла + высота видимой области
-    const documentHeight = document.body.clientHeight; // Полная высота документа
+      if (scrollPosition >= documentHeight) {
+        this.start = this.end;
+        this.end += SortableTable.size;
 
-    if (scrollPosition >= documentHeight - 50) {
-      this.start = this.end + 1;
-      this.end += this.size;
-
-      this.render().then();
+        await this.render();
+      }
     }
   }
 
   createListeners() {
-    document.addEventListener('scroll', e => this.handleScroll(e));
-
     super.createListeners();
+
+    window.addEventListener('scroll', this.handleScroll.bind(this));
+
+
   }
 
   destroyListeners() {
-    document.removeEventListener('scroll', e => this.handleScroll(e));
-
     super.destroyListeners();
+
+    window.removeEventListener('scroll', this.handleScroll.bind(this));
+
+
   }
 }

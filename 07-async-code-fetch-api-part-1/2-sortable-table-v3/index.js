@@ -65,10 +65,6 @@ export default class SortableTable extends SortableTableV2 {
 
       this.isLoadingData = true;
 
-      /*if (!data.length) {
-        this.isLoadingData = true;
-        return;
-      }*/
       for (let item of data) {
         this.data.push(item);
       }
@@ -98,17 +94,12 @@ export default class SortableTable extends SortableTableV2 {
 
   createListeners() {
     super.createListeners();
-
-    window.addEventListener('scroll', this.handleScroll.bind(this));
-
-
+    this.handleScroll = this.handleScroll.bind(this);
+    window.addEventListener('scroll', this.handleScroll);
   }
 
   destroyListeners() {
     super.destroyListeners();
-
-    window.removeEventListener('scroll', this.handleScroll.bind(this));
-
-
+    window.removeEventListener('scroll', this.handleScroll);
   }
 }
